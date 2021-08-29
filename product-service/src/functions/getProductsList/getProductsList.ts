@@ -6,7 +6,7 @@ import {formatJSONResponse} from "@libs/apiGateway";
 
 const getProductList = async () => {
     const products = await getAllProducts();
-    return formatJSONResponse(products)
+    return formatJSONResponse(products);
 }
 
 export const main = middyfy(getProductList);
