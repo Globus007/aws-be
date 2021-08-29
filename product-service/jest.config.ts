@@ -7,14 +7,14 @@ export default {
   preset: 'ts-jest',
   testEnvironment: 'jest-environment-node',
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'node'],
-  modulePaths: ["src/libs/*"],
+  modulePaths: ['src/libs/*'],
   testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[tj]s?(x)'],
   transform: {
     'node_modules/variables/.+\\.(j|t)sx?$': 'ts-jest',
   },
   transformIgnorePatterns: ['node_modules/(?!variables/.*)'],
   moduleNameMapper: {
-    "^@libs/(.*)$": "<rootDir>/src/libs/$1",
-    "^@functions/(.*)$": "<rootDir>/src/functions/$1"
-  }
+    '^@libs/(.*)$': '<rootDir>/src/libs/$1',
+    '^@functions/(.*)$': '<rootDir>/src/functions/$1',
+  },
 };
