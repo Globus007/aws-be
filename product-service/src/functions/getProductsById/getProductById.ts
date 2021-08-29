@@ -5,7 +5,11 @@ import {getProduct} from "../../components/data.component";
 import {formatJSONResponse} from "@libs/apiGateway";
 
 const getProductById = async (event) => {
-    const product = await getProduct(event.pathParameters.productId);
+    const productId = event.pathParameters.productId;
+    const product = await getProduct(productId);
+    if( !product ) {
+        return formatJSONResponse(`Product with id = '${productId}' not found`)
+    }
     return formatJSONResponse(product)
 }
 
