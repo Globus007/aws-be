@@ -1,12 +1,12 @@
 import 'source-map-support/register';
 
 import { middyfy } from '@libs/lambda';
-import { getAllProducts } from "../../components/data.component";
-import {formatJSONResponse} from "@libs/apiGateway";
+import { getAllProducts } from '../../components/data.component';
+import { formatJSONResponse } from '@libs/apiGateway';
 
 const getProductList = async () => {
-    const products = await getAllProducts();
-    return formatJSONResponse(products);
-}
+  const products = await getAllProducts();
+  return formatJSONResponse(products);
+};
 
 export const main = middyfy(getProductList);
