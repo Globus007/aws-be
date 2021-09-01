@@ -6,11 +6,12 @@ import { formatJSONResponse } from '@libs/apiGateway';
 
 const getProductById = async (event) => {
   const productId = event.pathParameters.productId;
-  const product = await getProduct(productId);
-  if (!product) {
-    return formatJSONResponse(`Product with id = '${productId}' not found`);
+  try {
+    const product = await getProduct(productId);
+    return formatJSONResponse(200, product);
+  } catch (e) {
+    return formatJSONResponse(500, e?.message);
   }
-  return formatJSONResponse(product);
 };
 
 export const main = middyfy(getProductById);
