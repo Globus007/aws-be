@@ -4,3 +4,10 @@ export interface Product {
   description: string;
   price: number;
 }
+
+export interface PostParams {
+  title: string;
+  description?: string;
+  price: number;
+  count: number;
+}

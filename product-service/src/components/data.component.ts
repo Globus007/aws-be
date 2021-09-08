@@ -1,6 +1,7 @@
-import { Product } from '../types/types';
+import { PostParams, Product } from '../types/types';
 import { NotFoundError, ValidationError } from '../utils/errors';
 import { Client, ClientConfig, QueryResult } from 'pg';
+import validator from 'validator';
 
 const { DB_HOST, DB_PORT, DB_DATABASE, DB_USER, DB_PASS } = process.env;
 
@@ -42,21 +43,36 @@ export const getProduct = async (id: string): Promise<Product> => {
   return product;
 };
 
-const validateParams = (title: string, description: string, price: string): void => {
-  if (!title) {
-    throw new ValidationError(`Incorrect title - ${title}`);
+const validateParams = (params: PostParams): void => {
+  const { price, count } = params;
+  if (!validator.isInt(String(price))) {
+    throw new ValidationError(`Price should be integer - ${price}`);
   }
-  if (!description) {
-    throw new ValidationError(`Incorrect description - ${description}`);
-  }
-  if (!price) {
-    throw new ValidationError(`Incorrect price - ${price}`);
+  if (!validator.isInt(String(count))) {
+    throw new ValidationError(`Count should be integer - ${count}`);
   }
 };
 
-export const addProductToDB = async (title: string, description: string, price: string): Promise<Product> => {
-  validateParams(title, description, price);
-  const query = 'INSERT INTO products(title, description, price) VALUES ($1 ,$2, $3)';
-  const res = await executeQuery<Product>(query, [title, description, price]);
-  return res.rows[0];
+// TODO: refactor this method
+export const addProductToDB = async (params: PostParams): Promise<void> => {
+  validateParams(params);
+  const { title, price, description, count } = params;
+
+  const client = new Client(dbConfig);
+
+  try {
+    await client.connect();
+    await client.query('BEGIN');
+    const queryAddProduct = `INSERT INTO products(title, description, price)
+                             VALUES ($1, $2, $3)
+                             RETURNING id`;
+    const res = await client.query<Product>(queryAddProduct, [title, description, String(price)]);
+
+    const queryAddCount = `INSERT INTO stocks(product_id, count)
+                           VALUES ($1, $2)`;
+    await client.query(queryAddCount, [res.rows[0]?.id, String(count)]);
+    await client.query('COMMIT');
+  } finally {
+    await client.end();
+  }
 };
