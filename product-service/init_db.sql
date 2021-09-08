@@ -1,27 +1,14 @@
-CREATE TABLE IF NOT EXISTS products
-(
-    id          uuid PRIMARY KEY DEFAULT uuid_generate_v4
-        (
-        ),
+CREATE TABLE IF NOT EXISTS products(
+    id          uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     title       TEXT NOT NULL,
     description TEXT,
     price       INTEGER
 );
 
-CREATE TABLE IF NOT EXISTS stocks
-(
-    product_id
-        uuid,
-    count
-        INTEGER,
-    FOREIGN
-        KEY
-        (
-         product_id
-            ) REFERENCES products
-        (
-         id
-            )
+CREATE TABLE IF NOT EXISTS stocks(
+    product_id uuid,
+    count      INTEGER,
+    FOREIGN KEY (product_id) REFERENCES products(id)
 );
 
 INSERT INTO products(title, description, price)
