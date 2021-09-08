@@ -26,13 +26,18 @@ const executeQuery = async <T>(query: string, params: string[] = []): Promise<Qu
 };
 
 export const getAllProducts = async (): Promise<Product[]> => {
-  const query = 'SELECT * FROM products p join stocks s on p.id = s.product_id';
+  const query = `SELECT id, title, description, count
+                 FROM products p
+                          join stocks s on p.id = s.product_id`;
   const res = await executeQuery<Product>(query);
   return res.rows;
 };
 
 export const getProduct = async (id: string): Promise<Product> => {
-  const query = 'SELECT * FROM products p join stocks s on p.id = s.product_id WHERE id=$1';
+  const query = `SELECT id, title, description, count
+                 FROM products p
+                          join stocks s on p.id = s.product_id
+                 WHERE id = $1`;
   const res = await executeQuery<Product>(query, [id]);
 
   const product = res.rows[0];
