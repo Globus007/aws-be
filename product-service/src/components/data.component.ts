@@ -1,5 +1,5 @@
 import { Product } from '../types/types';
-import { NotFoundError } from '../utils/errors';
+import { NotFoundError, ValidationError } from '../utils/errors';
 import { Client, ClientConfig, QueryResult } from 'pg';
 
 const { DB_HOST, DB_PORT, DB_DATABASE, DB_USER, DB_PASS } = process.env;
@@ -40,4 +40,23 @@ export const getProduct = async (id: string): Promise<Product> => {
   }
 
   return product;
+};
+
+const validateParams = (title: string, description: string, price: string): void => {
+  if (!title) {
+    throw new ValidationError(`Incorrect title - ${title}`);
+  }
+  if (!description) {
+    throw new ValidationError(`Incorrect description - ${description}`);
+  }
+  if (!price) {
+    throw new ValidationError(`Incorrect price - ${price}`);
+  }
+};
+
+export const addProductToDB = async (title: string, description: string, price: string): Promise<Product> => {
+  validateParams(title, description, price);
+  const query = 'INSERT INTO products(title, description, price) VALUES ($1 ,$2, $3)';
+  const res = await executeQuery<Product>(query, [title, description, price]);
+  return res.rows[0];
 };
