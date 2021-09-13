@@ -37,9 +37,10 @@ export const getProduct = async (id: string): Promise<Product> => {
                  FROM products p
                           join stocks s on p.id = s.product_id
                  WHERE id = $1`;
-  const { rows: products } = await executeQuery<Product>(query, [id]);
+  const {
+    rows: [product],
+  } = await executeQuery<Product>(query, [id]);
 
-  const product = products[0];
   if (!product) {
     throw new NotFoundError(`Product with id = ${id} not found`);
   }
@@ -58,11 +59,13 @@ export const addProductToDB = async (params: PostParams): Promise<void> => {
     const queryAddProduct = `INSERT INTO products(title, description, price)
                              VALUES ($1, $2, $3)
                              RETURNING id`;
-    const { rows: products } = await client.query<Product>(queryAddProduct, [title, description, String(price)]);
+    const {
+      rows: [product],
+    } = await client.query<Product>(queryAddProduct, [title, description, String(price)]);
 
     const queryAddCount = `INSERT INTO stocks(product_id, count)
                            VALUES ($1, $2)`;
-    await client.query(queryAddCount, [products[0]?.id, String(count)]);
+    await client.query(queryAddCount, [product?.id, String(count)]);
     await client.query('COMMIT');
   } catch (e) {
     await client.query('ROLLBACK');
