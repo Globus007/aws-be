@@ -1,15 +1,15 @@
 import { handlerPath } from '@libs/handlerResolver';
 
+const PATH = 'import';
+
 export default {
   handler: `${handlerPath(__dirname)}/handler.main`,
   events: [
     {
       http: {
         method: 'get',
-        path: 'import',
-        request: {
-          schema: {},
-        },
+        path: PATH,
+        cors: true,
       },
     },
   ],

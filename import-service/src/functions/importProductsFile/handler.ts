@@ -3,25 +3,23 @@ import 'source-map-support/register';
 import { formatJSONResponse } from '@libs/apiGateway';
 import { middyfy } from '@libs/lambda';
 import * as AWS from 'aws-sdk';
+import { BUCKET, REGION, UPLOADED_FOLDER } from '../../types/types';
+import { APIGatewayProxyEvent } from 'aws-lambda';
 
-const REGION = 'eu-west-1';
-const BUCKET = 'aws-task5';
-const PREFIX = 'csv/';
-
-const importProductsFile = async () => {
-  const s3: AWS.S3 = new AWS.S3({ region: REGION });
-  // const s3 = new S3Client({ region: REGION });
-  const params = { Bucket: BUCKET, Prefix: PREFIX };
-
+const importProductsFile = async (event: APIGatewayProxyEvent): Promise<unknown> => {
   try {
-    const s3Response = await s3.listObjectsV2(params).promise();
+    const { name } = event.queryStringParameters;
 
-    const response = s3Response.Contents;
-    const files = response
-      .filter((file) => file.Size)
-      .map((file) => `https://${BUCKET}.s3.amazonaws.com/${file.Key}`);
+    const s3: AWS.S3 = new AWS.S3({ region: REGION });
+    const s3Params = {
+      Bucket: BUCKET,
+      Key: `${UPLOADED_FOLDER}/${name}`,
+      ContentType: 'text/csv',
+    };
 
-    return formatJSONResponse(200, files);
+    const uploadUrl = await s3.getSignedUrlPromise('putObject', s3Params);
+
+    return formatJSONResponse(200, uploadUrl);
   } catch (e) {
     return formatJSONResponse(500, e?.message);
   }
