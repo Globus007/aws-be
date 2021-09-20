@@ -19,7 +19,7 @@ const importFileParser = async (event): Promise<unknown> => {
       };
 
       const stream = s3.getObject(fileParams).createReadStream();
-      logCSVFile(stream);
+      await logCSVFile(stream);
 
       await s3.copyObject(copyParams).promise();
 
