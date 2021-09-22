@@ -4,7 +4,7 @@ import { importProductsFile } from '@functions/importProductsFile/handler';
 
 const s3getSignedUrlMock = jest
   .fn()
-  .mockImplementation((_a, _b, callback) => callback(undefined, 'test_signed_url'));
+  .mockImplementation((_a, _b, callback) => callback(null, 'test_signed_url'));
 
 const eventMock: APIGatewayProxyEvent = {
   queryStringParameters: {
