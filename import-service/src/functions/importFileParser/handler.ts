@@ -2,10 +2,10 @@ import 'source-map-support/register';
 import { middyfy } from '@libs/lambda';
 import * as AWS from 'aws-sdk';
 import { S3 } from 'aws-sdk';
-import { BUCKET, PARSED_FOLDER, REGION, UPLOADED_FOLDER } from '../../types/types';
+import { BUCKET, LambdaResponse, PARSED_FOLDER, REGION, UPLOADED_FOLDER } from '../../types/types';
 import { logCSVFile } from '../../components/csv-parser';
 
-const importFileParser = async (event): Promise<unknown> => {
+const importFileParser = async (event): Promise<LambdaResponse> => {
   const s3: AWS.S3 = new AWS.S3({ region: REGION });
 
   try {

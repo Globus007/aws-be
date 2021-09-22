@@ -3,10 +3,10 @@ import 'source-map-support/register';
 import { formatJSONResponse } from '@libs/apiGateway';
 import { middyfy } from '@libs/lambda';
 import * as AWS from 'aws-sdk';
-import { BUCKET, REGION, UPLOADED_FOLDER } from '../../types/types';
+import { BUCKET, LambdaResponse, REGION, UPLOADED_FOLDER } from '../../types/types';
 import { APIGatewayProxyEvent } from 'aws-lambda';
 
-const importProductsFile = async (event: APIGatewayProxyEvent): Promise<unknown> => {
+export const importProductsFile = async (event: APIGatewayProxyEvent): Promise<LambdaResponse> => {
   try {
     const { name } = event.queryStringParameters;
 

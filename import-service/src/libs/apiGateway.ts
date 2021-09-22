@@ -1,4 +1,6 @@
-export const formatJSONResponse = (code: number, response: unknown) => {
+import { LambdaResponse } from '../types/types';
+
+export const formatJSONResponse = (code: number, response: unknown): LambdaResponse => {
   return {
     headers: {
       'Access-Control-Allow-Headers': 'Content-Type',
