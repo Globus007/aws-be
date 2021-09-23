@@ -2,9 +2,7 @@ import { mock, restore } from 'aws-sdk-mock';
 import { APIGatewayProxyEvent } from 'aws-lambda';
 import { importProductsFile } from '@functions/importProductsFile/handler';
 
-const s3getSignedUrlMock = jest
-  .fn()
-  .mockImplementation((_a, _b, callback) => callback(null, 'test_signed_url'));
+const s3getSignedUrlMock = 'test_signed_url';
 
 const eventMock: APIGatewayProxyEvent = {
   queryStringParameters: {
