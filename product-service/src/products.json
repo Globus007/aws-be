@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "title": "iPhone 12",
+    "description": "Phone 12, 64 Gb, Purple",
+    "price": 729
+  },
+  {
+    "id": 2,
+    "title": "iPhone 13",
+    "description": "Phone 13, 128 Gb, Black",
+    "price": 1500
+  },
+  {
+    "id": 3,
+    "title": "iPhone 12 Pro",
+    "description": "Phone 12, 128 Gb, Graphite",
+    "price": 999
+  },
+  {
+    "id": 4,
+    "title": "iPhone 12 Pro Max",
+    "description": "Phone 12, 128 Gb, Gold",
+    "price": 1099
+  },
+  {
+    "id": 5,
+    "title": "iPhone SE",
+    "description": "Phone 12, 64 Gb, (PRODUCT)RED",
+    "price": 399
+  },
+  {
+    "id": 6,
+    "title": "iPhone 11",
+    "description": "Phone 12, 64 Gb, Yellow",
+    "price": 559
+  }
+]
