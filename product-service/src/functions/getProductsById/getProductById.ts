@@ -6,6 +6,7 @@ import { formatJSONResponse } from '@libs/apiGateway';
 
 const getProductById = async (event) => {
   const productId = event.pathParameters.productId;
+  console.log(`getProductById lambda is running with id = ${productId}`);
   try {
     const product = await getProduct(productId);
     return formatJSONResponse(200, product);

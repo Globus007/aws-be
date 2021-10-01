@@ -1,9 +1,8 @@
 import type { AWS } from '@serverless/typescript';
-
-import { addProduct, getProductsById, getProductsList } from '@functions/index';
+import { importFileParser, importProductsFile } from '@functions/index';
 
 const serverlessConfiguration: AWS = {
-  service: 'aws-be',
+  service: 'import-service',
   frameworkVersion: '2',
   custom: {
     webpack: {
@@ -23,13 +22,23 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
     },
-    lambdaHashingVersion: '20201221',
-    httpApi: {
-      cors: true,
-    },
-  },
-  // import the function via paths
-  functions: { getProductsList, getProductsById, addProduct },
-};
+    iamRoleStatements: [
+      {
+        Effect: 'Allow',
+        Action: 's3:ListBucket',
+        Resource: ['arn:aws:s3:::aws-task5'],
+      },
+      {
+        Effect: 'Allow',
+        Action: 's3:*',
+        Resource: ['arn:aws:s3:::aws-task5/*'],
+      },
+    ],
 
+    lambdaHashingVersion: '20201221',
+  },
+
+  // import the function via paths
+  functions: { importProductsFile, importFileParser },
+};
 module.exports = serverlessConfiguration;
