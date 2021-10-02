@@ -21,6 +21,7 @@ const serverlessConfiguration: AWS = {
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+      SQS_URL: { Ref: 'SQSQueue' },
     },
     iamRoleStatements: [
       {
@@ -36,6 +37,15 @@ const serverlessConfiguration: AWS = {
     ],
 
     lambdaHashingVersion: '20201221',
+  },
+
+  resources: {
+    Resources: {
+      SQSQueue: {
+        Type: 'AWS::SQS::Queue',
+        Properties: { QueueName: 'import-service-queue' },
+      },
+    },
   },
 
   // import the function via paths
