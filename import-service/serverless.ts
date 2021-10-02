@@ -31,6 +31,11 @@ const serverlessConfiguration: AWS = {
       },
       {
         Effect: 'Allow',
+        Action: 'sqs:*',
+        Resource: [{ 'Fn::GetAll': ['SQSQueue', 'Arn'] }],
+      },
+      {
+        Effect: 'Allow',
         Action: 's3:*',
         Resource: ['arn:aws:s3:::aws-task5/*'],
       },
