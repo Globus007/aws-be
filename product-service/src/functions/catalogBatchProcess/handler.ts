@@ -2,11 +2,12 @@ import AWS from 'aws-sdk';
 import { middyfy } from '@libs/lambda';
 import { InputProduct, REGION } from '../../types/types';
 import { addProductToDB } from '../../components/data.component';
+import { SQSEvent } from 'aws-lambda';
 
-const catalogBatchProcess = async (event): Promise<void> => {
+export const catalogBatchProcess = async (event: SQSEvent): Promise<void> => {
   try {
     console.log('catalogBatchProcess start');
-    const InputProducts: InputProduct[] = event.Records.map(({ body }) => body);
+    const InputProducts: InputProduct[] = event.Records.map(({ body }) => JSON.parse(body));
     console.log('Input products:', InputProducts);
 
     for (const product of InputProducts) {
