@@ -3,7 +3,7 @@ import { middyfy } from '@libs/lambda';
 import * as AWS from 'aws-sdk';
 import { S3 } from 'aws-sdk';
 import { BUCKET, LambdaResponse, PARSED_FOLDER, REGION, UPLOADED_FOLDER } from '../../types/types';
-import { logCSVFile } from '../../components/csv-parser';
+import { parseCSVFile } from '../../components/csv-parser';
 
 const importFileParser = async (event): Promise<LambdaResponse> => {
   const s3: AWS.S3 = new AWS.S3({ region: REGION });
@@ -19,7 +19,7 @@ const importFileParser = async (event): Promise<LambdaResponse> => {
       };
 
       const stream = s3.getObject(fileParams).createReadStream();
-      await logCSVFile(stream);
+      await parseCSVFile(stream);
 
       await s3.copyObject(copyParams).promise();
 

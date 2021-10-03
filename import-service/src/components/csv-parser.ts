@@ -2,7 +2,7 @@ import AWS from 'aws-sdk';
 import csvParser from 'csv-parser';
 import { Readable } from 'stream';
 
-export const logCSVFile = async (stream: Readable): Promise<void> => {
+export const parseCSVFile = async (stream: Readable): Promise<void> => {
   return new Promise<void>((resolve, reject) => {
     const sqs = new AWS.SQS();
     const results = [];
@@ -18,9 +18,9 @@ export const logCSVFile = async (stream: Readable): Promise<void> => {
         sqs.sendMessage(
           {
             QueueUrl: process.env.SQS_URL,
-            MessageBody: data,
+            MessageBody: JSON.stringify(data),
           },
-          (err, data) => {
+          (err) => {
             if (err) {
               console.log('SendMessage Error', err);
             }

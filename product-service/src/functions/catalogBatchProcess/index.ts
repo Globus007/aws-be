@@ -6,9 +6,7 @@ export default {
     {
       sqs: {
         bachSize: 5,
-        arn: {
-          'Fn::GetAttr': ['SQSQueue', 'Arn'],
-        },
+        arn: '${cf:import-service-dev.QueueArnValue}',
       },
     },
   ],

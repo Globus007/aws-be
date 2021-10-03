@@ -31,8 +31,8 @@ const serverlessConfiguration: AWS = {
       },
       {
         Effect: 'Allow',
-        Action: 'sqs:*',
-        Resource: [{ 'Fn::GetAll': ['SQSQueue', 'Arn'] }],
+        Action: ['sqs:*'],
+        Resource: [{ 'Fn::GetAtt': ['SQSQueue', 'Arn'] }],
       },
       {
         Effect: 'Allow',
@@ -42,6 +42,14 @@ const serverlessConfiguration: AWS = {
     ],
 
     lambdaHashingVersion: '20201221',
+  },
+
+  outputs: {
+    QueueARN: {
+      Description: 'ARN of import-service-queue',
+      Value: { 'Fn::GetAtt': ['SQSQueue', 'Arn'] },
+      Export: { Name: 'QueueARN' },
+    },
   },
 
   resources: {
