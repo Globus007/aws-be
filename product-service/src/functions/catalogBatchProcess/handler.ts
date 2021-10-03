@@ -1,8 +1,8 @@
 import AWS from 'aws-sdk';
 import { middyfy } from '@libs/lambda';
 import { InputProduct, REGION } from '../../types/types';
-import { addProductToDB } from '../../components/data.component';
 import { SQSEvent } from 'aws-lambda';
+import { addProductToDB } from '../../components/data.component';
 
 export const catalogBatchProcess = async (event: SQSEvent): Promise<void> => {
   try {
@@ -12,22 +12,30 @@ export const catalogBatchProcess = async (event: SQSEvent): Promise<void> => {
 
     for (const product of InputProducts) {
       await addProductToDB(product);
-    }
 
-    const sns = new AWS.SNS({ region: REGION });
-    sns.publish(
-      {
-        Subject: 'Product added',
-        Message: JSON.stringify(InputProducts),
-        TopicArn: process.env.SNS_ARN,
-      },
-      (err) => {
-        if (err) {
-          throw err;
-        }
-        console.log('SNS sent with message:', InputProducts);
-      },
-    );
+      console.log('Product added to DB', product);
+
+      const sns = new AWS.SNS({ region: REGION });
+      await sns
+        .publish({
+          Subject: 'Product added',
+          Message: JSON.stringify(product),
+          TopicArn: process.env.SNS_ARN,
+          MessageAttributes: {
+            event: {
+              DataType: 'String',
+              StringValue: 'product_added',
+            },
+            product_title: {
+              DataType: 'String',
+              StringValue: product.title,
+            },
+          },
+        })
+        .promise();
+
+      console.log('SNS has been sent for product', product);
+    }
   } catch (e) {
     console.log('ERROR in catalogBatchProcess', e);
   }

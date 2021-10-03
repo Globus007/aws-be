@@ -7,7 +7,7 @@ export const parseCSVFile = async (stream: Readable): Promise<void> => {
     const sqs = new AWS.SQS();
     const results = [];
 
-    const headers = ['Title', 'Description', 'Price', 'Count', 'Action'];
+    const headers = ['title', 'description', 'price', 'count'];
     const separator = ';';
 
     stream

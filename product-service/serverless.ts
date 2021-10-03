@@ -50,6 +50,15 @@ const serverlessConfiguration: AWS = {
           TopicArn: { Ref: 'SNSTopic' },
         },
       },
+      SNSSubscriptionFilteredByTitle: {
+        Type: 'AWS::SNS::Subscription',
+        Properties: {
+          Endpoint: 'aqc45350@zwoho.com',
+          Protocol: 'email',
+          TopicArn: { Ref: 'SNSTopic' },
+          FilterPolicy: { event: ['product_added'], product_title: [{ prefix: 'iPhone' }] },
+        },
+      },
     },
   },
   // import the function via paths
