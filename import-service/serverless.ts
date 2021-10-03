@@ -21,6 +21,7 @@ const serverlessConfiguration: AWS = {
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+      SQS_URL: { Ref: 'SQSQueue' },
     },
     iamRoleStatements: [
       {
@@ -30,12 +31,33 @@ const serverlessConfiguration: AWS = {
       },
       {
         Effect: 'Allow',
+        Action: ['sqs:*'],
+        Resource: [{ 'Fn::GetAtt': ['SQSQueue', 'Arn'] }],
+      },
+      {
+        Effect: 'Allow',
         Action: 's3:*',
         Resource: ['arn:aws:s3:::aws-task5/*'],
       },
     ],
 
     lambdaHashingVersion: '20201221',
+  },
+
+  resources: {
+    Resources: {
+      SQSQueue: {
+        Type: 'AWS::SQS::Queue',
+        Properties: { QueueName: 'import-service-queue' },
+      },
+    },
+    Outputs: {
+      QueueARNKey: {
+        Description: 'ARN of import-service-queue',
+        Value: { 'Fn::GetAtt': ['SQSQueue', 'Arn'] },
+        Export: { Name: 'QueueARNName' },
+      },
+    },
   },
 
   // import the function via paths

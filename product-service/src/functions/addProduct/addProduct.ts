@@ -3,10 +3,10 @@ import { formatJSONResponse, ValidatedEventAPIGatewayProxyEvent } from '@libs/ap
 import { middyfy } from '@libs/lambda';
 import { ValidationError } from '../../utils/errors';
 import schema from '@functions/addProduct/schema';
-import { PostParams } from '../../types/types';
+import { InputProduct } from '../../types/types';
 
 const addProduct: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
-  const params = event.body as PostParams;
+  const params = event.body as InputProduct;
   console.log(`addProductToDB lambda is running with params = ${params}`);
 
   try {

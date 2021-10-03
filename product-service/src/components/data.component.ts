@@ -1,4 +1,4 @@
-import { PostParams, Product } from '../types/types';
+import { InputProduct, Product } from '../types';
 import { NotFoundError } from '../utils/errors';
 import { Client, ClientConfig, QueryResult } from 'pg';
 
@@ -48,7 +48,8 @@ export const getProduct = async (id: string): Promise<Product> => {
   return product;
 };
 
-export const addProductToDB = async (params: PostParams): Promise<void> => {
+export const addProductToDB = async (params: InputProduct): Promise<void> => {
+  console.log('addProductToDB', params);
   const { title, price, description, count } = params;
 
   const client = new Client(dbConfig);
@@ -67,6 +68,7 @@ export const addProductToDB = async (params: PostParams): Promise<void> => {
                            VALUES ($1, $2)`;
     await client.query(queryAddCount, [product?.id, String(count)]);
     await client.query('COMMIT');
+    console.log('Product added to DB', product);
   } catch (e) {
     await client.query('ROLLBACK');
     throw e;
