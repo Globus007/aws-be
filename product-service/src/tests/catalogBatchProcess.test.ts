@@ -3,12 +3,20 @@ import { catalogBatchProcess } from '@functions/catalogBatchProcess/handler';
 import { SQSEvent } from 'aws-lambda';
 import * as dataFunctions from '../components/data.component';
 
-const snsPublishMock = jest.fn().mockImplementation(() => Promise.resolve('SNS sent with message'));
+const snsPublishMock = jest.fn().mockImplementation(() => Promise.resolve());
 
-const sqsEventMock: SQSEvent = {
+const sqsEventMockOneProduct: SQSEvent = {
   Records: [
     {
-      body: '{"Title":"Name18","Description":"Project18","Price":"29","Count":"38","Action":"post"}',
+      body: '{"title":"Name18","description":"project18","price":"29","count":"38"}',
+    },
+  ],
+} as any;
+
+const sqsEventMockTwoProducts: SQSEvent = {
+  Records: [
+    {
+      body: '[{"title":"Name18","description":"project18","price":"29","count":"38"},{"title":"Name18","description":"project18","price":"29","count":"38"}]',
     },
   ],
 } as any;
@@ -16,13 +24,23 @@ const sqsEventMock: SQSEvent = {
 jest.spyOn(dataFunctions, 'addProductToDB').mockReturnValue(null);
 
 describe('catalogBatchProcess lambda should work correct', () => {
-  test('catalogBatchProcess should emmit SNS publish', async () => {
+  test('catalogBatchProcess should emmit SNS publish one time with one product', async () => {
     console.log = jest.fn();
     mock('SNS', 'publish', snsPublishMock);
 
-    await catalogBatchProcess(sqsEventMock);
+    await catalogBatchProcess(sqsEventMockOneProduct);
 
-    expect(console.log).toBeCalledWith('catalogBatchProcess start');
     expect(snsPublishMock).toBeCalled();
+    expect(snsPublishMock).toBeCalledTimes(1);
+  });
+
+  test('catalogBatchProcess should emmit SNS publish 2 times with 2 products', async () => {
+    console.log = jest.fn();
+    mock('SNS', 'publish', snsPublishMock);
+
+    await catalogBatchProcess(sqsEventMockTwoProducts);
+
+    expect(snsPublishMock).toBeCalled();
+    expect(snsPublishMock).toBeCalledTimes(2);
   });
 });

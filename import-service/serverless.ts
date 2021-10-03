@@ -52,10 +52,10 @@ const serverlessConfiguration: AWS = {
       },
     },
     Outputs: {
-      QueueARN: {
+      QueueARNKey: {
         Description: 'ARN of import-service-queue',
         Value: { 'Fn::GetAtt': ['SQSQueue', 'Arn'] },
-        Export: { Name: 'QueueARN' },
+        Export: { Name: 'QueueARNName' },
       },
     },
   },

@@ -6,7 +6,7 @@ export default {
     {
       sqs: {
         bachSize: 5,
-        arn: '${cf:import-service-dev.QueueArnValue}',
+        arn: '${cf:import-service-dev.QueueARNKey}',
       },
     },
   ],
