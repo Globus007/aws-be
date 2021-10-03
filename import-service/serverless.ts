@@ -44,19 +44,18 @@ const serverlessConfiguration: AWS = {
     lambdaHashingVersion: '20201221',
   },
 
-  outputs: {
-    QueueARN: {
-      Description: 'ARN of import-service-queue',
-      Value: { 'Fn::GetAtt': ['SQSQueue', 'Arn'] },
-      Export: { Name: 'QueueARN' },
-    },
-  },
-
   resources: {
     Resources: {
       SQSQueue: {
         Type: 'AWS::SQS::Queue',
         Properties: { QueueName: 'import-service-queue' },
+      },
+    },
+    Outputs: {
+      QueueARN: {
+        Description: 'ARN of import-service-queue',
+        Value: { 'Fn::GetAtt': ['SQSQueue', 'Arn'] },
+        Export: { Name: 'QueueARN' },
       },
     },
   },

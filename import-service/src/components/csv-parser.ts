@@ -1,40 +1,24 @@
-import AWS from 'aws-sdk';
 import csvParser from 'csv-parser';
 import { Readable } from 'stream';
+import { InputProduct } from '../types/types';
+import { HEADERS, SEPARATOR } from './csv-parser.constants';
 
-export const parseCSVFile = async (stream: Readable): Promise<void> => {
-  return new Promise<void>((resolve, reject) => {
-    const sqs = new AWS.SQS();
-    const results = [];
-
-    const headers = ['title', 'description', 'price', 'count'];
-    const separator = ';';
+export const parseCSVFile = async (stream: Readable): Promise<InputProduct[]> => {
+  return new Promise<InputProduct[]>((resolve, reject) => {
+    const results: InputProduct[] = [];
 
     stream
-      .pipe(csvParser({ separator, headers }))
+      .pipe(csvParser({ separator: SEPARATOR, headers: HEADERS }))
       .on('data', (data) => {
         results.push(data);
-
-        sqs.sendMessage(
-          {
-            QueueUrl: process.env.SQS_URL,
-            MessageBody: JSON.stringify(data),
-          },
-          (err) => {
-            if (err) {
-              console.log('SendMessage Error', err);
-            }
-            console.log('Send message', data);
-          },
-        );
       })
       .on('error', (error) => {
-        console.log(error.message);
+        console.error('parseCSVFile', error.message);
         reject(error);
       })
       .on('end', () => {
-        console.log(results);
-        resolve();
+        console.log('parseCSVFile', results);
+        resolve(results);
       });
   });
 };

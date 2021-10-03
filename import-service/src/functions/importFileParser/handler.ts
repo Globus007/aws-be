@@ -1,12 +1,10 @@
-import 'source-map-support/register';
-import { middyfy } from '@libs/lambda';
-import * as AWS from 'aws-sdk';
-import { S3 } from 'aws-sdk';
+import { S3, SQS } from 'aws-sdk';
 import { BUCKET, LambdaResponse, PARSED_FOLDER, REGION, UPLOADED_FOLDER } from '../../types/types';
 import { parseCSVFile } from '../../components/csv-parser';
+import { middyfy } from '@libs/lambda';
 
 const importFileParser = async (event): Promise<LambdaResponse> => {
-  const s3: AWS.S3 = new AWS.S3({ region: REGION });
+  const s3: S3 = new S3({ region: REGION });
 
   try {
     for (const record of event.Records) {
@@ -17,18 +15,25 @@ const importFileParser = async (event): Promise<LambdaResponse> => {
         CopySource: `${BUCKET}/${fileKey}`,
         Key: fileKey.replace(UPLOADED_FOLDER, PARSED_FOLDER),
       };
+      const QueueUrl = process.env.SQS_URL;
 
       const stream = s3.getObject(fileParams).createReadStream();
-      await parseCSVFile(stream);
+      const products = await parseCSVFile(stream);
+
+      const sqs = new SQS();
+      for (const product of products) {
+        const MessageBody = JSON.stringify(product);
+        await sqs.sendMessage({ QueueUrl, MessageBody }).promise();
+      }
 
       await s3.copyObject(copyParams).promise();
-
       await s3.deleteObject(fileParams).promise();
     }
 
+    console.log('importFileParser: Csv parsed correctly');
     return { statusCode: 200 };
   } catch (e) {
-    console.log(e);
+    console.log('importFileParser', e);
     return { statusCode: 500 };
   }
 };
