@@ -10,6 +10,13 @@ export default {
         method: 'get',
         path: PATH,
         cors: true,
+        authorizer: {
+          name: 'basicAuthorizer',
+          arn: '${cf:authorization-service-dev.AuthorizationArn}',
+          resultTtlInSeconds: 0,
+          identitySource: 'method.request.header.Authorization',
+          type: 'token',
+        },
       },
     },
   ],
