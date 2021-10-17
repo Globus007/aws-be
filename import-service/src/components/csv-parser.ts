@@ -1,23 +1,24 @@
 import csvParser from 'csv-parser';
 import { Readable } from 'stream';
+import { InputProduct } from '../types/types';
+import { HEADERS, SEPARATOR } from './csv-parser.constants';
 
-export const logCSVFile = async (stream: Readable): Promise<void> => {
-  return new Promise<void>((resolve, reject) => {
-    const results = [];
-
-    const headers = ['Title', 'Description', 'Price', 'Count', 'Action'];
-    const separator = ';';
+export const parseCSVFile = async (stream: Readable): Promise<InputProduct[]> => {
+  return new Promise<InputProduct[]>((resolve, reject) => {
+    const results: InputProduct[] = [];
 
     stream
-      .pipe(csvParser({ separator, headers }))
-      .on('data', (data) => results.push(data))
+      .pipe(csvParser({ separator: SEPARATOR, headers: HEADERS }))
+      .on('data', (data) => {
+        results.push(data);
+      })
       .on('error', (error) => {
-        console.log(error.message);
+        console.error('parseCSVFile', error.message);
         reject(error);
       })
       .on('end', () => {
-        console.log(results);
-        resolve();
+        console.log('parseCSVFile', results);
+        resolve(results);
       });
   });
 };

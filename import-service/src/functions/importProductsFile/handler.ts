@@ -7,6 +7,7 @@ import { BUCKET, LambdaResponse, REGION, UPLOADED_FOLDER } from '../../types/typ
 import { APIGatewayProxyEvent } from 'aws-lambda';
 
 export const importProductsFile = async (event: APIGatewayProxyEvent): Promise<LambdaResponse> => {
+  console.log({ event });
   try {
     const { name } = event.queryStringParameters;
 
@@ -21,6 +22,7 @@ export const importProductsFile = async (event: APIGatewayProxyEvent): Promise<L
 
     return formatJSONResponse(200, uploadUrl);
   } catch (e) {
+    console.log({ e });
     return formatJSONResponse(500, e?.message);
   }
 };

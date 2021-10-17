@@ -8,3 +8,10 @@ export interface LambdaResponse {
   statusCode: number;
   body?: string;
 }
+
+export interface InputProduct {
+  title: string;
+  description?: string;
+  price: number;
+  count: number;
+}
