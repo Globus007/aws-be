@@ -1,0 +1,28 @@
+{
+  "name": "bff-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node dist/index.js",
+    "build": "tsc",
+    "deploy": "npm run build && npm run start",
+    "eb-init": "eb init --region eu-west-1",
+    "eb-create": "eb create development --single --cname globus007-bff-develop-cached",
+    "eb-terminate": "eb terminate"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.13"
+  },
+  "dependencies": {
+    "axios": "^0.24.0",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "node-cache": "^5.1.2",
+    "typescript": "^4.4.4"
+  }
+}
